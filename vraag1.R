@@ -26,6 +26,10 @@ median(time_treat_1)
 mean(treat)
 median(treat)
 
+# Vraag 3: Verband drugsgebruik voor de inschrijving en type behandeling
+
+table(dataset$treat, dataset$ivhx)
+chisq.test(dataset$treat, dataset$ivhx)
 
 #
 # quantile(age, na.rm = TRUE)
