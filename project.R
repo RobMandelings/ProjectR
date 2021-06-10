@@ -14,7 +14,7 @@ i <- 8
 j <- 8
 k <- 4
 
-dataset[-c(k + 1, j + 1, i + 1, j*k + 1, i*j + 1, i*k + 1, i*j*k + 1, i + j + k + 1),]
+dataset[-c(k + 1, i + 1, i*j + 1, i*k + 1, i*j*k + 1, i + j + k + 1),]
 
 # Vraag 1: verdeling van de variabele age
 
