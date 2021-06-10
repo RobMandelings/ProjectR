@@ -6,6 +6,7 @@
 library(ggplot)
 library(zoo)
 library(e1071)
+library(dplyr)
 
 dataset <- read.csv('drugs_2021.csv', sep = ';')
 
@@ -86,10 +87,19 @@ chisq.test(dataset$treat, dataset$ivhx)
 
 # Vraag 4: Duur van de behandeling invloed op tijd tot herval?
 
+los <- dataset$los
+time <- dataset$time
+
 plot(dataset$los, dataset$time, main = "Scatterplot", xlab = "los (duur behandeling)", ylab = 'time (tijd tot herval)')
 abline(lm(dataset$los ~ dataset$time, data = mtcars), col = "red")
 
 cor.test(dataset$los, dataset$time, method = "spearman")
+
+losAndTime <- dataset[c("los", "time")]
+
+lmLosTime <- lm(los~time, data=losAndTime)
+
+summary(lmLosTime)
 #
 # quantile(age, na.rm = TRUE)
 # hist(age)
