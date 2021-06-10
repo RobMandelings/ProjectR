@@ -10,6 +10,12 @@ library(dplyr)
 
 dataset <- read.csv('drugs_2021.csv', sep = ';')
 
+i <- 8
+j <- 8
+k <- 4
+
+dataset[-c(k + 1, j + 1, i + 1, j*k + 1, i*j + 1, i*k + 1, i*j*k + 1, i + j + k + 1),]
+
 # Vraag 1: verdeling van de variabele age
 
 age <- (dataset$age)
@@ -94,12 +100,13 @@ plot(dataset$los, dataset$time, main = "Scatterplot", xlab = "los (duur behandel
 abline(lm(dataset$los ~ dataset$time, data = mtcars), col = "red")
 
 cor.test(dataset$los, dataset$time, method = "spearman")
-
 losAndTime <- dataset[c("los", "time")]
-
 lmLosTime <- lm(los~time, data=losAndTime)
-
 summary(lmLosTime)
+
+los_100 <- subset(dataset$time, los == 100)
+max(los_100)
+min(los_100)
 #
 # quantile(age, na.rm = TRUE)
 # hist(age)
