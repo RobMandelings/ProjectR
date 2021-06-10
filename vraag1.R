@@ -5,6 +5,7 @@
 
 library(ggplot)
 library(zoo)
+library(e1071)
 
 dataset <- read.csv('drugs_2021.csv', sep = ';')
 
@@ -23,8 +24,7 @@ xfit <- seq(min(age), max(age), length = 40)
 yfit <- dnorm(xfit, mean = mean(age), sd = sd(age)) 
 yfit <- yfit * diff(age_hist$mids[1:2]) * length(age)
 
-lines(xfit, yfit, col = "black", lwd = 2)
-
+lines(xfit, yfit, col = "red", lwd = 2)
 
 
 table(age)
@@ -33,22 +33,51 @@ shapiro.test(age)
 
 # Vraag 1: normalizering
 
-hist(log(age))
-qqnorm(log(age))
+log_age <- log(age)
+
+qqnorm(log_age, main = title('Normal Q-Q Plot variabele age'))
+qqline(log_age)
+
+log_age_hist <- hist(log_age, breaks = 30)
+xfit <- seq(min(log_age), max(log_age), length = 40) 
+yfit <- dnorm(xfit, mean = mean(log_age), sd = sd(log_age)) 
+yfit <- yfit * diff(log_age_hist$mids[1:2]) * length(log_age)
+
+lines(xfit, yfit, col = "red", lwd = 2)
+shapiro.test(log_age)
 
 # Vraag 2: Hangt de efficientie af van het type programma
 
 treat <- dataset$treat
 time <- dataset$time
-
 time_treat_0 <- subset(dataset$time, treat == 0)
+time_treat_1 <- subset(dataset$time, treat == 1)
+
+time_treat_0_hist <- hist(time_treat_0, xlim = c(0,max(time_treat_0, time_treat_1)), ylim = c(0, 130), main = "Histogram of time with treat = 0")
+xfit <- seq(min(time_treat_0), max(time_treat_0), length = 40) 
+yfit <- dnorm(xfit, mean = mean(time_treat_0), sd = sd(time_treat_0)) 
+yfit <- yfit * diff(time_treat_0_hist$mids[1:2]) * length(time_treat_0)
+lines(xfit, yfit, col = "red", lwd = 2)
+
+time_treat_1_hist <- hist(time_treat_1, xlim = c(0,max(time_treat_0, time_treat_1)), ylim = c(0, 130), main="Histogram of time with treat = 1")
+xfit <- seq(min(time_treat_1), max(time_treat_1), length = 40) 
+yfit <- dnorm(xfit, mean = mean(time_treat_1), sd = sd(time_treat_1)) 
+yfit <- yfit * diff(time_treat_1_hist$mids[1:2]) * length(time_treat_1)
+lines(xfit, yfit, col = "red", lwd = 2)
+
+
+mean(time_treat_0)
 median(time_treat_0)
 
-time_treat_1 <- subset(dataset$time, treat == 1)
+mean(time_treat_1)
 median(time_treat_1)
 
-mean(treat)
-median(treat)
+shapiro.test(time_treat_0)
+shapiro.test(time_treat_1)
+
+wilcox.test(time_treat_0, time_treat_1, alternative = "two.sided")
+wilcox.test(time_treat_1, time_treat_0, alternative = "greater")
+
 
 # Vraag 3: Verband drugsgebruik voor de inschrijving en type behandeling
 
